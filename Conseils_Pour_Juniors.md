@@ -8,7 +8,7 @@ retourne `true`
 Pour vous aider, voici un extrait d'un excellent livre sur Ruby, **Metaprogramming Ruby 2** de Paolo Perrotta chez Pragmatic 
 Bookshelf
 
->###Kernel#eval  
+>### Kernel#eval  
 >    
 >    *Where you learn that, when it comes right down to it, code is just text.*
 >    
@@ -17,7 +17,7 @@ Bookshelf
 >    is the most straightforward of the three *eval methods. Instead of a block, it takes a string that contains Ruby, String 
 >    of Code for short. Kernel#eval executes the code in the string and returns the result:  
 >    
->######simple_eval.rb
+>###### simple_eval.rb
 >    ```ruby​
 >    array = [10, 20]
 >    ​ 	
@@ -28,7 +28,7 @@ Bookshelf
 >    Executing a literal string of Ruby code is a pretty pointless exercise, but the power of eval becomes apparent when you 
 >    compute your Strings of Code on the fly. Here’s an example.  
 >    
->####The REST Client Example
+>#### The REST Client Example
 >    REST Client (installed with gem install rest-client) is a simple HTTP client library. It includes an interpreter where 
 >    you can issue regular Ruby commands together with HTTP methods such as get:
 >    ```ruby
@@ -42,7 +42,7 @@ Bookshelf
 >    If you look in the gem’s source, you will see that get and the three other basic HTTP methods are defined on the Resource 
 >    class:  
 >    
->######gems/rest-client-1.6.7/lib/restclient/resource.rb    
+>###### gems/rest-client-1.6.7/lib/restclient/resource.rb    
 >    ```ruby
 >    ​module​ RestClient  
 >    ​
@@ -72,7 +72,7 @@ Bookshelf
 >    delete. However, here comes a twist. Instead of defining the four methods separately, REST Client defines all of them in 
 >    one shot by creating and evaluating four Strings of Code (String of Code) in a loop:
 >    
->######gems/rest-client-1.6.7/bin/restclient​ 
+>###### gems/rest-client-1.6.7/bin/restclient​ 
 >    ```ruby
 >    POSSIBLE_VERBS = [​'get'​, ​'put'​, ​'post'​, ​'delete'​]
 >    

@@ -39,6 +39,8 @@ derniers tests, pour être réalisés dans un temps raisonnable, nécessite plus
 (Linux, 8 cores, 32 Go RAM), ma première version passait les 7 premiers tests en 22 secondes, la dernière passe tous les tests
 en 4 secondes
 
+>*Si vous êtes junior (ou perdu) vous pouvez consulter le fichier Conseils_Pour_Junior.md*
+
 Pour les anglophiles:  
 [Alphametics](https://en.wikipedia.org/wiki/Alphametics) is a puzzle where
 letters in words are replaced with numbers.

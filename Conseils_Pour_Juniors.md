@@ -38,9 +38,9 @@ you can issue regular Ruby commands together with HTTP methods such as get:
 If you look in the gem’s source, you will see that get and the three other basic HTTP methods are defined on the Resource 
 class:  
 
-######gems/rest-client-1.6.7/lib/restclient/resource.rb  
-
-​```ruby
+######gems/rest-client-1.6.7/lib/restclient/resource.rb
+  
+```ruby
 ​module​ RestClient  
 ​
   ​class​ Resource
@@ -55,19 +55,18 @@ class:
     # ...
   end
 end
-```
+```  
 
 To make get and its siblings available in the interpreter, REST Client defines four top-level methods that delegate to 
 the methods of a Resource at a specific URL. For example, here is how the top-level get delegates to a Resource (returned 
 by the r method):
 
-​```ruby 	
-​def​  get(path, *args, &b)
-​ 	
+```ruby
+​def​  get(path, *args, &b)	
   r[path].get(*args, &b)
-​ 	
 ​end​
 ```
+
 You might expect to find this definition of get in the source code, together with similar definitions for put, post, and 
 delete. However, here comes a twist. Instead of defining the four methods separately, REST Client defines all of them in 
 one shot by creating and evaluating four Strings of Code (String of Code) in a loop:

@@ -142,17 +142,17 @@ def build_solve(letters_array)
   #...
  # votre code pour générer une chaîne pour les arguments de solve 
  # et une autre pour l'équation remaniée
-     eval <<-RUBY
+     eval <<-RUBY_PROC
        Proc.new do |les arguments|
-         l'équation remaniée
+         l'équation remaniée (sous forme de chaine interpollée ???)
        end
-     RUBY 
+     RUBY_PROC 
  # ou avec une méthode
-      eval <<-RUBY
+      eval <<-RUBY_METH
         def solve(les arguments)
-          l'équation remaniée
+          l'équation remaniée (sous forme de chaine interpollée ???)
         end
-      RUBY  
+      RUBY_METH  
 end
 ```
 Vous pouvez bien-sûr décomposer encore plus, par exemple avoir une méthode pour créer les arguments (elle prend en entrée 
@@ -175,17 +175,17 @@ def build_solve(letters_array)
   #...
  # votre code pour générer une chaîne pour les arguments de solve 
  # et une autre pour l'équation remaniée
-     eval <<-RUBY
+     eval <<-RUBY_PROC
        Proc.new do |les arguments|
-         l'équation remaniée
+         #{first_letters_not_zero} && l'équation remaniée
        end
-     RUBY 
+     RUBY_PROC 
  # ou avec une méthode
-      eval <<-RUBY
+      eval <<-RUBY_MET
         def solve(les arguments)
           #{first_letters_not_zero} && l'équation remaniée
         end
-      RUBY  
+      RUBY_MET  
 end
 ```
 4 Maintenant, vous avez tous les outils pour pouvoir repasser à la résolution des tests, vous pouvez avoir besoin de pas 

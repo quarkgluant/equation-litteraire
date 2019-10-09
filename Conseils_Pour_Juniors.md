@@ -100,35 +100,43 @@ Bookshelf
 
 Donc avec `Kernel#eval` vous allez transformer un puzzle, par ex `A + B == C` en une méthode ou un `proc` du genre:  
 ```ruby
-def solve?(a, b, c)
-  a + b == c
-end
+eval <<-RUBY
+    def solve?(a, b, c)
+      a + b == c
+    end
+RUBY
 ```
-L'exemple ci-dessus est un peu trivial, voire débile (osons le dire!), puisqu'il admet plusieurs solutions...  
+L'exemple ci-dessus est un peu trivial, voire débile (osons le dire!), puisqu'il admet plusieurs solutions... Mais ne 
+brûlons pas les étapes 
 
-### Marche à suivre  
- 1 Première étape, la recherche avec un cas simple  
-Essayer de résoudre la plus simple équation,  `I + BB == ILL` avec votre éditeur et une console Irb ou Pry
-En codant en dur une méthode `solve`
+## Marche à suivre  
+
+1 Première étape, la recherche avec un cas simple, on ne s'occupe pas des tests    
+ 
+Essayer de résoudre la plus simple équation,  `I + BB == ILL` avec votre éditeur et une console Irb ou Pry en codant en dur une méthode `solve`
 ```ruby
 def solve(i, b, l)
   # votre code ici
 end
+# tel que
+solve(1, 2, 3) # retourne false 
+solve(4, 7, 9) # retourne false 
+solve(9, 1, 0) # retourne BINGO, euh pardon, true 
 ```
 Les diffcultés :
  * la gestion les dizaines (ex `BB`), centaines (`ILL`)...  
    Comment écrire cette méthode `solve` avec au final les lettres et éventuellement un coefficient (qui pourrait être un 
-   multiple de 10) pour que `solve(1,2,3)` retourne `false` mais `solve(9,1,0)` renvoie `true`
+   multiple de 10... j'dis ça, j'dis rien) pour que `solve(1,2,3)` retourne `false` mais `solve(9,1,0)` renvoie `true`
   
- 2 on commence à généraliser  
+2 on commence à généraliser  
 
 Maintenant on généralise en écrivant une méthode qui, en gros, va retourner la méthode solve ci-dessus, car, 
 évidemment, vous n'allez pas coder en dur la méthode/proc solve pour chaque cas de test, c'est à vous de générer
-dynamiquement une méthode/proc solve, en créant une chaîne (ou un heredoc), donc toujours avec votre console et votre 
-éditeur, écrivez une nouvelle méthode `build_solve` qui va prendre en entrée un array de lettres majuscules 
-(ex: `['I', 'B', 'L']`), va construire une chaîne/heredoc "def solve(...) ... end" en 
-utilisant l'interpolation de chaîne `#{truc}`.  
-Votre méthode `build_solve` devra retourner `eval heredoc/chaîne`, un truc du genre (pour changer, exemple avec Proc.new):  
+dynamiquement une méthode/proc solve qui va marcher pour toutes les équations, en créant une chaîne (ou un heredoc), 
+donc toujours avec votre console et votre éditeur, écrivez une nouvelle méthode `build_solve` qui va prendre en entrée 
+un array de lettres majuscules (ex: `['I', 'B', 'L']`), va construire une chaîne/heredoc `"def solve(...) ... end"` en 
+utilisant l'interpolation de chaîne `#{truc}` et retourner `eval votre chaîne/heredoc`.  
+Votre méthode `build_solve` devra retourner un truc du genre (pour changer, exemple avec Proc.new puis avec une méthode):  
 ```ruby
 def build_solve(letters_array)
   #...
@@ -146,8 +154,10 @@ def build_solve(letters_array)
         end
       RUBY  
 end
-
 ```
+Vous pouvez bien-sûr décomposer encore plus, par exemple avoir une méthode pour créer les arguments (elle prend en entrée 
+un tableau de lettres, par ex ['I', 'B', 'L'] et en sortie une chaine, ici "i, b, l"), et une autre pour créer l'équation 
+remaniée, qui prendra en entrée le puzzle original et retourne l'équation réécrite sous forme de chaîne 
 comme dans l'exemple tiré de l'extrait du livre ci-dessus, et maintenant tester votre méthode build_sover, vous aurez besoin
 de [`Method#call`](https://ruby-doc.org/core-2.6.3/Method.html#method-i-call)
 ```ruby
@@ -156,5 +166,41 @@ test_solver = build_solver(['I', 'B', 'L'])
 test_solver.call(1, 2, 3) # doit renvoyer false
 test_solver.call(9, 1, 0) # doit renvoyer true
 ```
-
- 3 Maintenant, vous avez tous les outils pour pouvoir repasser à la résolution des tests
+3 dernière étape avant de coder enfin pour répondre aux tests, il vous faudra une méthode `first_letters_not_zero` qui va 
+prendre en entrée un array avec toutes les premières lettres (décomposons encore, une méthodes qui donne toutes les 
+premières lettres à partir d'un puzzle serait utile !) et retournera une chaîne prête à être tester avec eval, par exemple
+avec en entrée ['I', 'B'], elle reverra la chaîne "i != 0 && b != 0"
+```ruby
+def build_solve(letters_array)
+  #...
+ # votre code pour générer une chaîne pour les arguments de solve 
+ # et une autre pour l'équation remaniée
+     eval <<-RUBY
+       Proc.new do |les arguments|
+         l'équation remaniée
+       end
+     RUBY 
+ # ou avec une méthode
+      eval <<-RUBY
+        def solve(les arguments)
+          #{first_letters_not_zero} && l'équation remaniée
+        end
+      RUBY  
+end
+```
+4 Maintenant, vous avez tous les outils pour pouvoir repasser à la résolution des tests, vous pouvez avoir besoin de pas 
+mal de petites méthodes, outre celles déjà évoquées, 
+ * une pour trouver toutes les lettres d'un puzzle
+ * une pour trouver toutes premières lettres d'un puzzle comme on l'a déjà dit
+ * une pour regrouper les mots à gauche du signe `==` dans un Array
+ * une pour calculer la longueur des mots à gauche 
+ * une pour calculer la longueur du mot de droite
+ 
+ pour isoler les lettres, les premières lettres, je vous conseille [`String#scan`](https://ruby-doc.org/core-2.6.3/String.html#method-i-scan)
+ avec ces patterns offerts par la maison qui ne recule devant aucun sacrifice !
+ ```ruby
+  LETTERS = /[A-Z]/
+  FIRST_LETTERS = /\b([A-Z])[A-Z]*\b/
+  WORD_BOUNDARIES = /\b[A-Z]+\b/
+```
+Vous avez dix jours !

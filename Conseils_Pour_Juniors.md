@@ -2,7 +2,7 @@ Vous allez avoir, forcèment un boucle qui va itérer des milliers, des millions
  de fois, donc autant vous dire que le contenu de la boucle doit être le plus léger et rapide possible.
  
 La première astuce est de laisser Ruby résoudre tout seul le puzzle, en "compilant" avec [`Kernel#eval`](https://ruby-doc.org/core-2.6.3/Kernel.html#method-i-eval) 
-le puzzle de façon à cre qu'il ne vous reste plus qu'à lui envoyer les chiffres et voir quel combinaisons de chiffres 
+le puzzle de façon à ce qu'il ne vous reste plus qu'à lui envoyer les chiffres et voir quelles combinaisons de chiffres 
 retourne `true`  
 
 Pour vous aider, voici un extrait d'un excellent livre sur Ruby, **Metaprogramming Ruby 2** de Paolo Perrotta chez Pragmatic 
@@ -104,7 +104,57 @@ def solve?(a, b, c)
   a + b == c
 end
 ```
-Evidemment, vous n'allez pas coder en dur cette méthode ou ce proc pour chaque test, c'est à vous de créer 
-une chaîne (ou un heredoc), comme dans l'exemple cité ci-dessus, et dans votre boucle, il vous suffira d'envoyer 
-les valeurs numériques à tester avec [`Method#call`](https://ruby-doc.org/core-2.6.3/Method.html#method-i-call)
-A vous de gérer les dizaines (ex `AB`), centaines, milliers etc...
+L'exemple ci-dessus est un peu trivial, voire débile (osons le dire!), puisqu'il admet plusieurs solutions...  
+
+### Marche à suivre  
+ 1 Première étape, la recherche avec un cas simple  
+Essayer de résoudre la plus simple équation,  `I + BB == ILL` avec votre éditeur et une console Irb ou Pry
+En codant en dur une méthode `solve`
+```ruby
+def solve(i, b, l)
+  # votre code ici
+end
+```
+Les diffcultés :
+ * la gestion les dizaines (ex `BB`), centaines (`ILL`)...  
+   Comment écrire cette méthode `solve` avec au final les lettres et éventuellement un coefficient (qui pourrait être un 
+   multiple de 10) pour que `solve(1,2,3)` retourne `false` mais `solve(9,1,0)` renvoie `true`
+  
+ 2 on commence à généraliser  
+
+Maintenant on généralise en écrivant une méthode qui, en gros, va retourner la méthode solve ci-dessus, car, 
+évidemment, vous n'allez pas coder en dur la méthode/proc solve pour chaque cas de test, c'est à vous de générer
+dynamiquement une méthode/proc solve, en créant une chaîne (ou un heredoc), donc toujours avec votre console et votre 
+éditeur, écrivez une nouvelle méthode `build_solve` qui va prendre en entrée un array de lettres majuscules 
+(ex: `['I', 'B', 'L']`), va construire une chaîne/heredoc "def solve(...) ... end" en 
+utilisant l'interpolation de chaîne `#{truc}`.  
+Votre méthode `build_solve` devra retourner `eval heredoc/chaîne`, un truc du genre (pour changer, exemple avec Proc.new):  
+```ruby
+def build_solve(letters_array)
+  #...
+ # votre code pour générer une chaîne pour les arguments de solve 
+ # et une autre pour l'équation remaniée
+     eval <<-RUBY
+       Proc.new do |les arguments|
+         l'équation remaniée
+       end
+     RUBY 
+ # ou avec une méthode
+      eval <<-RUBY
+        def solve(les arguments)
+          l'équation remaniée
+        end
+      RUBY  
+end
+
+```
+comme dans l'exemple tiré de l'extrait du livre ci-dessus, et maintenant tester votre méthode build_sover, vous aurez besoin
+de [`Method#call`](https://ruby-doc.org/core-2.6.3/Method.html#method-i-call)
+```ruby
+test_solver = build_solver(['I', 'B', 'L'])
+# pour l'équation `I + BB == ILL`
+test_solver.call(1, 2, 3) # doit renvoyer false
+test_solver.call(9, 1, 0) # doit renvoyer true
+```
+
+ 3 Maintenant, vous avez tous les outils pour pouvoir repasser à la résolution des tests

@@ -1,4 +1,4 @@
-Vous allez avoir, forcèment un boucle qui va itérer des milliers, des millions voire pour les derniers tests des milliards
+Vous allez avoir, forcèment, une boucle qui va itérer des milliers, des millions voire pour les derniers tests des milliards
  de fois, donc autant vous dire que le contenu de la boucle doit être le plus léger et rapide possible.
  
 La première astuce est de laisser Ruby résoudre tout seul le puzzle, en "compilant" avec [`Kernel#eval`](https://ruby-doc.org/core-2.6.3/Kernel.html#method-i-eval) 
